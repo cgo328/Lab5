@@ -27,6 +27,14 @@
 #include <stdint.h>
 #include "../inc/tm4c123gh6pm.h"
 
+#define guitar 0
+#define trumpet 1
+#define bassoon 2
+
+extern uint32_t instrument;
+const uint16_t guitar_wave[64];
+const uint16_t trumpet_wave[64];
+const uint16_t bassoon_wave[64];
 
 //********DAC_Init*****************
 // Initialize Max5353 12-bit DAC
@@ -57,9 +65,66 @@ void DAC_Init(uint16_t data){
 // Send data to Max5353 12-bit DAC
 // inputs:  voltage output (0 to 4095)
 // outputs: none
-void DAC_Out(uint16_t code){   
+void DAC_Out(int16_t note0, int16_t note1){   
   while((SSI0_SR_R&0x00000002)==0){};// SSI Transmit FIFO Not Full
-  SSI0_DR_R = code; }                // data out, no reply
+	switch(instrument) {
+		case guitar:
+			if (note0 == -1) {
+				if (note1 == -1) {
+					SSI0_DR_R = 0;
+				}
+				else {
+					SSI0_DR_R = guitar_wave[note1];
+				}
+			}
+			else {
+				if (note1 == -1) {
+					SSI0_DR_R = guitar_wave[note0];
+				}
+				else {
+					SSI0_DR_R = guitar_wave[(note0 + note1) / 2];
+				}
+			}
+			break;
+		case trumpet:
+			if (note0 == -1) {
+				if (note1 == -1) {
+					SSI0_DR_R = 0;
+				}
+				else {
+					SSI0_DR_R = trumpet_wave[note1];
+				}
+			}
+			else {
+				if (note1 == -1) {
+					SSI0_DR_R = trumpet_wave[note0];
+				}
+				else {
+					SSI0_DR_R = trumpet_wave[(note0 + note1) / 2];
+				}
+			}
+			break;
+		case bassoon:
+			if (note0 == -1) {
+				if (note1 == -1) {
+					SSI0_DR_R = 0;
+				}
+				else {
+					SSI0_DR_R = bassoon_wave[note1];
+				}
+			}
+			else {
+				if (note1 == -1) {
+					SSI0_DR_R = bassoon_wave[note0];
+				}
+				else {
+					SSI0_DR_R = bassoon_wave[(note0 + note1) / 2];
+				}
+			}
+			break;
+	}
+  //SSI0_DR_R = code;                // data out, no reply
+}
   
 //********DAC_Out*****************
 // Send data to Max5353 12-bit DAC
