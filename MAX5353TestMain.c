@@ -167,6 +167,68 @@ const uint16_t wave[32] = {
 #define B2_8 593	
 #define C2_8 628	
 
+#define C_2_16 10
+#define DF_1_16 11
+#define D_1_16 11
+#define EF_1_16 12
+#define E_1_16 12
+#define F_1_16 13
+#define GF_1_16 14
+#define G_1_16 15
+#define AF_1_16 16
+#define A_1_16 17
+#define BF_1_16 18
+#define B_1_16 19
+#define C_1_16 20
+#define DF0_16 21
+#define D0_16 22
+#define EF0_16 23
+#define E0_16 25
+#define F0_16 26
+#define GF0_16 28
+#define G0_16 30
+#define AF0_16 31
+#define A0_16 33
+#define BF0_16 35
+#define B0_16 37
+#define C0_16 39
+#define DF_16 42
+#define D_16 44
+#define EF_16 47
+#define E_16 50
+#define F_16 53
+#define GF_16 56
+#define G_16 59
+#define AF_16 62
+#define A_16 66
+#define BF_16 70
+#define B_16 74
+#define C_16 79
+#define DF1_16 83
+#define D1_16 88
+#define EF1_16 93
+#define E1_16 99
+#define F1_16 105
+#define GF1_16 111
+#define G1_16 118
+#define AF1_16 125
+#define A1_16 132
+#define BF1_16 140
+#define B1_16 148
+#define C1_16 157
+#define DF2_16 166
+#define D2_16 176
+#define EF2_16 187
+#define E2_16 198
+#define F2_16 210
+#define GF2_16 222
+#define G2_16 235
+#define AF2_16 249
+#define A2_16 264
+#define BF2_16 280
+#define B2_16 296
+#define C2_16 314
+
 #define C_2_half 78		
 #define DF_1_half 84		
 #define D_1_half 88		
@@ -492,20 +554,66 @@ typedef struct{
 
 const note song0[100] = {
 	{G, G_3}, {C0, C0_3}, {C0, C0_8 }, {F, F_8 }, {G, G_4}, {C0, C0_4},
-  {C0, C0_4}, {C0, C0_8}, {E, E_8}, {D, D_whole}, //{-1, }, //first 4 measures
-	{F, F_3}, {BF0, BF0_3}, {BF0, BF0_8}, {E, E_8},
-	{F, F_4}, {BF0, BF0_4}, {E, E_8}, {D, D_8},
+  {C0, C0_4}, {C0, C0_8}, {EF, EF_8}, {D, D_whole}, //{-1, }, //first 4 measures
+	{F, F_3}, {BF0, BF0_3}, {BF0, BF0_8}, {EF, EF_8},
+	{F, F_4}, {BF0, BF0_4}, {EF, EF_8}, {D, D_8},
 	{C0, C0_whole}, // second 4 measures
 	{G, G_3}, {C0, C0_3}, {C0, C0_8}, {F, F_8},
-	{G, G_4}, {C0, C0_4}, {C0, C0_8}, {E, E_8},
+	{G, G_4}, {C0, C0_4}, {C0, C0_8}, {EF, EF_8},
 	{D, D_whole}, // third 4 measures
-	{F,F_3}, {BF0, BF0_3}, {D, D_6}, {E, E_6}, {D, D_6}, 
+	{F,F_3}, {BF0, BF0_3}, {D, D_6}, {EF, EF_6}, {D, D_6}, 
 	{BF0, BF0_6}, {C0, C0_whole}, //fourth 4 measures
 	{C, C_whole}, {BF, BF_whole}, {C0, C0_whole},
 	{G, G_whole},//fifth 4 measures
-	{E, E_whole}, {D, D_3}, {F, F_3}, {G, G_whole*2}
+	{EF, EF_whole}, {D, D_3}, {F, F_3}, {G, G_whole*2}
 };
-const note song1[100];
+const note song1[200] = {
+	{C_1, C_1_8}, {EF0, EF0_16}, {F0, F0_16}, {G0, G0_8},
+	{C_1, C_1_8}, {EF0, EF0_16}, {F0, F0_16}, {G0, G0_8},
+	{C_1, C_1_8}, {EF0, EF0_16}, {F0, F0_16}, {G0, G0_8},
+	{C_1, C_1_8}, {EF0, EF0_16}, {F0, F0_16}, {G0, G0_8},
+	{G_1, G_1_8}, {BF_1, BF_1_16}, {C_1, C_1_16}, {D0, D0_8},
+	{G_1, G_1_8}, {BF_1, BF_1_16}, {C_1, C_1_16}, {D0, D0_8},
+	{G_1, G_1_8}, {BF_1, BF_1_16}, {C_1, C_1_16}, {D0, D0_8},
+	{G_1, G_1_8}, {BF_1, BF_1_16}, {C_1, C_1_16}, {D0, D0_8},
+	{BF_1, BF_1_8}, {D0, D0_16}, {EF0, EF0_16}, {F0, F0_8},
+	{BF_1, BF_1_8}, {D0, D0_16}, {EF0, EF0_16}, {F0, F0_8},
+	{BF_1, BF_1_8}, {D0, D0_16}, {EF0, EF0_16}, {F0, F0_8},
+	{BF_1, BF_1_8}, {D0, D0_16}, {EF0, EF0_16}, {F0, F0_8},
+	{F_1, F_1_8}, {AF_1, AF_1_16}, {BF_1, BF_1_16}, {C_1, C_1_8},
+	{F_1, F_1_8}, {AF_1, AF_1_16}, {BF_1, BF_1_16}, {C_1, C_1_8},
+	{F_1, F_1_8}, {AF_1, AF_1_16}, {BF_1, BF_1_16}, {C_1, C_1_8},
+	{F_1, F_1_8}, {AF_1, AF_1_16}, {BF_1, BF_1_16}, {C_1, C_1_8},
+	{C_1, C_1_8}, {EF0, EF0_16}, {F0, F0_16}, {G0, G0_8},
+	{C_1, C_1_8}, {EF0, EF0_16}, {F0, F0_16}, {G0, G0_8},
+	{C_1, C_1_8}, {EF0, EF0_16}, {F0, F0_16}, {G0, G0_8},
+	{C_1, C_1_8}, {EF0, EF0_16}, {F0, F0_16}, {G0, G0_8},
+	{G_1, G_1_8}, {BF_1, BF_1_16}, {C_1, C_1_16}, {D0, D0_8},
+	{G_1, G_1_8}, {BF_1, BF_1_16}, {C_1, C_1_16}, {D0, D0_8},
+	{G_1, G_1_8}, {BF_1, BF_1_16}, {C_1, C_1_16}, {D0, D0_8},
+	{G_1, G_1_8}, {BF_1, BF_1_16}, {C_1, C_1_16}, {D0, D0_8},
+	{BF_1, BF_1_8}, {D0, D0_16}, {EF0, EF0_16}, {F0, F0_8},
+	{BF_1, BF_1_8}, {D0, D0_16}, {EF0, EF0_16}, {F0, F0_8},
+	{BF_1, BF_1_8}, {D0, D0_16}, {EF0, EF0_16}, {F0, F0_8},
+	{BF_1, BF_1_8}, {D0, D0_16}, {EF0, EF0_16}, {F0, F0_8},
+	{C_1, C_1_8}, {EF0, EF0_16}, {F0, F0_16}, {G0, G0_8},
+	{C_1, C_1_8}, {EF0, EF0_16}, {F0, F0_16}, {G0, G0_8},
+	{C_1, C_1_8}, {EF0, EF0_16}, {F0, F0_16}, {G0, G0_8},
+	{C_1, C_1_8}, {EF0, EF0_16}, {F0, F0_16}, {G0, G0_8},
+	{AF0, AF0_8}, {C0, C0_16}, {D, D_16}, {EF, EF_8},
+	{AF0, AF0_8}, {C0, C0_16}, {D, D_16}, {EF, EF_8},
+	{EF0, EF0_8}, {G0, G0_16}, {AF0, AF0_16}, {BF0, BF0_8},
+	{EF0, EF0_8}, {G0, G0_16}, {C0, C0_16}, {BF0, BF0_8},
+	{F0, F0_8}, {AF0, AF0_16}, {BF0, BF0_16}, {C0, C0_8},
+	{F0, F0_8}, {AF0, AF0_16}, {BF0, BF0_16}, {C0, C0_8},
+	{C_1, C_1_8}, {EF0, EF0_16}, {F0, F0_16}, {G0, G0_8},
+	{C_1, C_1_8}, {EF0, EF0_16}, {AF0, AF0_16}, {G0, G0_8},
+	{AF0, AF0_8}, {C0, C0_16}, {D, D_16}, {EF, EF_8},
+	{AF0, AF0_8}, {C0, C0_16}, {D, D_16}, {EF, EF_8},
+	{BF_1, BF_1_8}, {D0, D0_16}, {EF0, EF0_16}, {F0, F0_8},
+	{BF_1, BF_1_8}, {D0, D0_16}, {EF0, EF0_16}, {F0, F0_8},
+	{C_1, C_1_whole}
+};
 
 uint32_t wave0, wave1, count0, count1, note0, note1, instrument;
 char on_button, song_going;	
