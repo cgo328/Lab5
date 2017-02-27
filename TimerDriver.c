@@ -70,6 +70,9 @@
 #define trumpet 1
 #define bassoon 2
 
+void DisableInterrupts(void); // Disable interrupts
+void EnableInterrupts(void);  // Enable interrupts
+
 typedef struct{
 	int freq;
 	int len;
@@ -77,10 +80,7 @@ typedef struct{
 
 extern note song0[100], song1[100];
 extern uint32_t wave0, wave1, count0, count1, note0, note1, instrument;
-
-const uint16_t guitar_wave[64];
-const uint16_t trumpet_wave[64];
-const uint16_t bassoon_wave[64];
+extern char on_button, song_going;	
 
 // Initialize Timer0 to trigger every second
 void Timer0A_Init(uint32_t time){
@@ -103,14 +103,12 @@ void Timer0A_Init(uint32_t time){
   NVIC_EN0_R = 1<<19;              // enable interrupt 19 in NVIC
 }
 
-// ISR for Timer0, occurs every second
+// occurs based on 
 void Timer0A_Handler(){
 	TIMER0_ICR_R = TIMER_ICR_TATOCINT;  // acknowledge timer0A timeout
-	wave0++;
 	if (wave0 == 64) {
 		wave0 = 0;
-		count0++;
-		if (count0 > song0[note0].len - 20) {
+		if (count0 > song0[note0].len - 20) { // to insert the pauses between notes.
 			if (count1 > song1[note1].len - 20) {
 				DAC_Out(-1, -1);
 			}
@@ -118,8 +116,8 @@ void Timer0A_Handler(){
 				DAC_Out(-1, wave1);
 			}
 		}
-		else {
-			if (count1 > song1[note1].len - 20) {
+	else {
+		if (count1 > song1[note1].len - 20) {
 				DAC_Out(wave0, -1);
 			}
 			else {
@@ -129,9 +127,16 @@ void Timer0A_Handler(){
 		if (count0 == song0[note0].len) {
 			count0 = 0;
 			note0++;
+			if(note0 == 100){
+				song_going = 0;
+				disable_music();
+				return;
+			}
 			TIMER0_TAILR_R = song0[note0].freq;
 		}
 	}
+	wave0++;
+	count0++;
 }
 
 // Initialize Timer0
@@ -158,10 +163,8 @@ void Timer1A_Init(uint32_t time){
 // ISR for Timer0
 void Timer1A_Handler(){
 	TIMER1_ICR_R = TIMER_ICR_TATOCINT;  // acknowledge timer0A timeout
-	wave1++;
 	if (wave1 == 64) {
 		wave1 = 0;
-		count1++;
 		if (count0 > song0[note0].len - 20) {
 			if (count1 > song1[note1].len - 20) {
 				DAC_Out(-1, -1);
@@ -181,7 +184,20 @@ void Timer1A_Handler(){
 		if (count1 == song0[note0].len) {
 			count1 = 0;
 			note1++;
+			if(note1 == 100){
+				song_going = 0;
+				disable_music();
+				return;
+			}
 			TIMER1_TAILR_R = song1[note1].freq;
 		}
 	}
+	wave1++;
+	count1++;
+}
+
+void disable_music(){
+	NVIC_DIS0_R = 1<<19;              // disable interrupt 19 in NVIC
+	NVIC_DIS0_R = 1<<21;							// disable interrupt 21 in NVIC
+	//SSI0_CR1_R = 0x00000000;        // disable SSI, master mode
 }

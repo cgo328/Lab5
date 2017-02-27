@@ -24,8 +24,10 @@
 // SSI0Fss (!CS, pin 2) connected to PA3
 // SSI0Tx (DIN, pin 3) connected to PA5
 // see Figure 7.19 for complete schematic
+
 #include <stdint.h>
 #include "../inc/tm4c123gh6pm.h"
+#include "MAX5353.h"
 
 #define guitar 0
 #define trumpet 1
@@ -41,7 +43,7 @@ const uint16_t bassoon_wave[64];
 // inputs:  initial voltage output (0 to 4095)
 // outputs: none
 // assumes: system clock rate less than 20 MHz
-void DAC_Init(uint16_t data){
+void DAC_Init(){
   SYSCTL_RCGCSSI_R |= 0x01;       // activate SSI0
   SYSCTL_RCGCGPIO_R |= 0x01;      // activate port A
   while((SYSCTL_PRGPIO_R&0x01) == 0){};// ready?
@@ -54,7 +56,7 @@ void DAC_Init(uint16_t data){
   SSI0_CR0_R &= ~(0x0000FF70);    // SCR = 0, SPH = 1, SPO = 0 Freescale
 	SSI0_CR0_R |= 0x00000080;
   SSI0_CR0_R |= 0x0F;             // DSS = 16-bit data
-  SSI0_DR_R = data;               // load 'data' into transmit FIFO
+  SSI0_DR_R = 0;               // load 'data' into transmit FIFO
   SSI0_CR1_R |= 0x00000002;       // enable SSI
 
 }
@@ -69,12 +71,12 @@ void DAC_Out(int16_t note0, int16_t note1){
   while((SSI0_SR_R&0x00000002)==0){};// SSI Transmit FIFO Not Full
 	switch(instrument) {
 		case guitar:
-			if (note0 == -1) {
-				if (note1 == -1) {
+			if (note0 == -1) { // case where note0 is not currently assigned to anything
+				if (note1 == -1) { // case where there is a pause between notes
 					SSI0_DR_R = 0;
 				}
 				else {
-					SSI0_DR_R = guitar_wave[note1];
+					SSI0_DR_R = guitar_wave[note1]; // only note 1
 				}
 			}
 			else {
@@ -82,17 +84,17 @@ void DAC_Out(int16_t note0, int16_t note1){
 					SSI0_DR_R = guitar_wave[note0];
 				}
 				else {
-					SSI0_DR_R = guitar_wave[(note0 + note1) / 2];
+					SSI0_DR_R = guitar_wave[(note0 + note1) / 2];  //case where you add and then average them to create the proper note
 				}
 			}
 			break;
 		case trumpet:
-			if (note0 == -1) {
-				if (note1 == -1) {
+			if (note0 == -1) {  // case where note0 is not currently assigned to anything
+				if (note1 == -1) { //// case where there is a pause between notes
 					SSI0_DR_R = 0;
 				}
 				else {
-					SSI0_DR_R = trumpet_wave[note1];
+					SSI0_DR_R = trumpet_wave[note1];  // only note 1
 				}
 			}
 			else {

@@ -29,6 +29,7 @@
 #include <stdint.h>
 #include "MAX5353.h"
 #include "SysTick.h"
+#include "TimerDriver.h"
 
 // 12-bit 32-element sine wave
 // multiply each value by 2 to shift into bits 12:1 of SSI packet
@@ -104,9 +105,385 @@ const uint16_t wave[32] = {
 #define B2 395   // 1975.533 Hz
 #define C2 373   // 2093.005 Hz
 
+#define C_2_8 20	
+#define DF_1_8 21	
+#define D_1_8 22	
+#define EF_1_8 24	
+#define E_1_8 25	
+#define F_1_8 26	
+#define GF_1_8 28	
+#define G_1_8 30	
+#define AF_1_8 31	
+#define A_1_8 33	
+#define BF_1_8 35	
+#define B_1_8 37	
+#define C_1_8 39	
+#define DF0_8 42	
+#define D0_8 44	
+#define EF0_8 47	
+#define E0_8 50	
+#define F0_8 53	
+#define GF0_8 56	
+#define G0_8 59	
+#define AF0_8 63	
+#define A0_8 66	
+#define BF0_8 70	
+#define B0_8 74	
+#define C0_8 79	
+#define DF_8 83	
+#define D_8 88	
+#define EF_8 94	
+#define E_8 99	
+#define F_8 105	
+#define GF_8 111	
+#define G_8 118	
+#define AF_8 125	
+#define A_8 132	
+#define BF_8 140	
+#define B_8 148	
+#define C_8 157	
+#define DF1_8 167	
+#define D1_8 176	
+#define EF1_8 187	
+#define E1_8 198	
+#define F1_8 210	
+#define GF1_8 222	
+#define G1_8 235	
+#define AF1_8 249	
+#define A1_8 264	
+#define BF1_8 280	
+#define B1_8 297	
+#define C1_8 314	
+#define DF2_8 333	
+#define D2_8 353	
+#define EF2_8 374	
+#define E2_8 396	
+#define F2_8 419	
+#define GF2_8 444	
+#define G2_8 471	
+#define AF2_8 499	
+#define A2_8 528	
+#define BF2_8 560	
+#define B2_8 593	
+#define C2_8 628	
+
+#define C_2_half 78		
+#define DF_1_half 84		
+#define D_1_half 88		
+#define EF_1_half 94		
+#define E_1_half 98		
+#define F_1_half 104		
+#define GF_1_half 110		
+#define G_1_half 118		
+#define AF_1_half 124		
+#define A_1_half 132		
+#define BF_1_half 140		
+#define B_1_half 148		
+#define C_1_half 156		
+#define DF0_half 166		
+#define D0_half 176		
+#define EF0_half 186		
+#define E0_half 198		
+#define F0_half 210		
+#define GF0_half 222		
+#define G0_half 236		
+#define AF0_half 250		
+#define A0_half 264		
+#define BF0_half 280		
+#define B0_half 296		
+#define C0_half 314		
+#define DF_half 332		
+#define D_half 352		
+#define EF_half 374		
+#define E_half 396		
+#define F_half 420		
+#define GF_half 444		
+#define G_half 470		
+#define AF_half 498		
+#define A_half 528		
+#define BF_half 560		
+#define B_half 592		
+#define C_half 628		
+#define DF1_half 666		
+#define D1_half 704		
+#define EF1_half 746		
+#define E1_half 792		
+#define F1_half 838		
+#define GF1_half 888		
+#define G1_half 940		
+#define AF1_half 996		
+#define A1_half 1056		
+#define BF1_half 1118		
+#define B1_half 1186		
+#define C1_half 1256		
+#define DF2_half 1330		
+#define D2_half 1410		
+#define EF2_half 1494		
+#define E2_half 1582		
+#define F2_half 1676		
+#define GF2_half 1776		
+#define G2_half 1882		
+#define AF2_half 1994		
+#define A2_half 2112		
+#define BF2_half 2238		
+#define B2_half 2370		
+#define C2_half 2512		
+
+#define C_2_4 39		
+#define DF_1_4 42		
+#define D_1_4 44		
+#define EF_1_4 47		
+#define E_1_4 49		
+#define F_1_4 52		
+#define GF_1_4 55		
+#define G_1_4 59		
+#define AF_1_4 62		
+#define A_1_4 66		
+#define BF_1_4 70		
+#define B_1_4 74		
+#define C_1_4 78		
+#define DF0_4 83		
+#define D0_4 88		
+#define EF0_4 93		
+#define E0_4 99		
+#define F0_4 105		
+#define GF0_4 111		
+#define G0_4 118		
+#define AF0_4 125		
+#define A0_4 132		
+#define BF0_4 140		
+#define B0_4 148		
+#define C0_4 157		
+#define DF_4 166		
+#define D_4 176		
+#define EF_4 187		
+#define E_4 198		
+#define F_4 210		
+#define GF_4 222		
+#define G_4 235		
+#define AF_4 249		
+#define A_4 264		
+#define BF_4 280		
+#define B_4 296		
+#define C_4 314		
+#define DF1_4 333		
+#define D1_4 352		
+#define EF1_4 373		
+#define E1_4 396		
+#define F1_4 419		
+#define GF1_4 444		
+#define G1_4 470		
+#define AF1_4 498		
+#define A1_4 528		
+#define BF1_4 559		
+#define B1_4 593		
+#define C1_4 628		
+#define DF2_4 665		
+#define D2_4 705		
+#define EF2_4 747		
+#define E2_4 791		
+#define F2_4 838		
+#define GF2_4 888		
+#define G2_4 941		
+#define AF2_4 997		
+#define A2_4 1056		
+#define BF2_4 1119		
+#define B2_4 1185		
+#define C2_4 1256		
+
+#define C_2_3 59		
+#define DF_1_3 63		
+#define D_1_3 66		
+#define EF_1_3 71		
+#define E_1_3 74		
+#define F_1_3 78		
+#define GF_1_3 83		
+#define G_1_3 89		
+#define AF_1_3 93		
+#define A_1_3 99		
+#define BF_1_3 105		
+#define B_1_3 111		
+#define C_1_3 117		
+#define DF0_3 125		
+#define D0_3 132		
+#define EF0_3 140		
+#define E0_3 149		
+#define F0_3 158		
+#define GF0_3 167		
+#define G0_3 177		
+#define AF0_3 188		
+#define A0_3 198		
+#define BF0_3 210		
+#define B0_3 222		
+#define C0_3 236		
+#define DF_3 249		
+#define D_3 264		
+#define EF_3 281		
+#define E_3 297		
+#define F_3 315		
+#define GF_3 333		
+#define G_3 353		
+#define AF_3 374		
+#define A_3 396		
+#define BF_3 420		
+#define B_3 444		
+#define C_3 471		
+#define DF1_3 500		
+#define D1_3 528		
+#define EF1_3 560		
+#define E1_3 594		
+#define F1_3 629		
+#define GF1_3 666		
+#define G1_3 705		
+#define AF1_3 747		
+#define A1_3 792		
+#define BF1_3 839		
+#define B1_3 890		
+#define C1_3 942		
+#define DF2_3 998		
+#define D2_3 1058		
+#define EF2_3 1121		
+#define E2_3 1187		
+#define F2_3 1257		
+#define GF2_3 1332		
+#define G2_3 1412		
+#define AF2_3 1496		
+#define A2_3 1584		
+#define BF2_3 1679		
+#define B2_3 1778		
+#define C2_3 1884		
+
+#define C_2_whole 117		
+#define DF_1_whole 126		
+#define D_1_whole 132		
+#define EF_1_whole 141		
+#define E_1_whole 147		
+#define F_1_whole 156		
+#define GF_1_whole 165		
+#define G_1_whole 177		
+#define AF_1_whole 186		
+#define A_1_whole 198		
+#define BF_1_whole 210		
+#define B_1_whole 222		
+#define C_1_whole 234		
+#define DF0_whole 249		
+#define D0_whole 264		
+#define EF0_whole 279		
+#define E0_whole 297		
+#define F0_whole 315		
+#define GF0_whole 333		
+#define G0_whole 354		
+#define AF0_whole 375		
+#define A0_whole 396		
+#define BF0_whole 420		
+#define B0_whole 444		
+#define C0_whole 471		
+#define DF_whole 498		
+#define D_whole 528		
+#define EF_whole 561		
+#define E_whole 594		
+#define F_whole 630		
+#define GF_whole 666		
+#define G_whole 705		
+#define AF_whole 747		
+#define A_whole 792		
+#define BF_whole 840		
+#define B_whole 888		
+#define C_whole 942		
+#define DF1_whole 999		
+#define D1_whole 1056		
+#define EF1_whole 1119		
+#define E1_whole 1188		
+#define F1_whole 1257		
+#define GF1_whole 1332		
+#define G1_whole 1410		
+#define AF1_whole 1494		
+#define A1_whole 1584		
+#define BF1_whole 1677		
+#define B1_whole 1779		
+#define C1_whole 1884		
+#define DF2_whole 1995		
+#define D2_whole 2115		
+#define EF2_whole 2241		
+#define E2_whole 2373		
+#define F2_whole 2514		
+#define GF2_whole 2664		
+#define G2_whole 2823		
+#define AF2_whole 2991		
+#define A2_whole 3168		
+#define BF2_whole 3357		
+#define B2_whole 3555		
+#define C2_whole 3768		
+
+#define C_2_6 30		
+#define DF_1_6 32		
+#define D_1_6 33		
+#define EF_1_6 36		
+#define E_1_6 38		
+#define F_1_6 39		
+#define GF_1_6 42		
+#define G_1_6 45		
+#define AF_1_6 47		
+#define A_1_6 50		
+#define BF_1_6 53		
+#define B_1_6 56		
+#define C_1_6 59		
+#define DF0_6 63		
+#define D0_6 66		
+#define EF0_6 71		
+#define E0_6 75		
+#define F0_6 80		
+#define GF0_6 84		
+#define G0_6 89		
+#define AF0_6 95		
+#define A0_6 99		
+#define BF0_6 105		
+#define B0_6 111		
+#define C0_6 119		
+#define DF_6 125		
+#define D_6 132		
+#define EF_6 141		
+#define E_6 149		
+#define F_6 158		
+#define GF_6 167		
+#define G_6 177		
+#define AF_6 188		
+#define A_6 198		
+#define BF_6 210		
+#define B_6 222		
+#define C_6 236		
+#define DF1_6 251		
+#define D1_6 264		
+#define EF1_6 281		
+#define E1_6 297		
+#define F1_6 315		
+#define GF1_6 333		
+#define G1_6 353		
+#define AF1_6 374		
+#define A1_6 396		
+#define BF1_6 420		
+#define B1_6 446		
+#define C1_6 471		
+#define DF2_6 500		
+#define D2_6 530		
+#define EF2_6 561		
+#define E2_6 594		
+#define F2_6 629		
+#define GF2_6 666		
+#define G2_6 707		
+#define AF2_6 749		
+#define A2_6 792		
+#define BF2_6 840		
+#define B2_6 890		
+#define C2_6 942		
+
+
 #define guitar 0
 #define trumpet 1
 #define bassoon 2
+
+void DisableInterrupts(void); // Disable interrupts
+void EnableInterrupts(void);  // Enable interrupts
 
 typedef struct{
 	int freq;
@@ -114,31 +491,45 @@ typedef struct{
 } note;
 
 const note song0[100] = {
-	{G, 353},
-	{C0, 235}
+	{G, G_3}, {C0, C0_3}, {C0, C0_8 }, {F, F_8 }, {G, G_4}, {C0, C0_4},
+  {C0, C0_4}, {C0, C0_8}, {E, E_8}, {D, D_whole}, //{-1, }, //first 4 measures
+	{F, F_3}, {BF0, BF0_3}, {BF0, BF0_8}, {E, E_8},
+	{F, F_4}, {BF0, BF0_4}, {E, E_8}, {D, D_8},
+	{C0, C0_whole}, // second 4 measures
+	{G, G_3}, {C0, C0_3}, {C0, C0_8}, {F, F_8},
+	{G, G_4}, {C0, C0_4}, {C0, C0_8}, {E, E_8},
+	{D, D_whole}, // third 4 measures
+	{F,F_3}, {BF0, BF0_3}, {D, D_6}, {E, E_6}, {D, D_6}, 
+	{BF0, BF0_6}, {C0, C0_whole}, //fourth 4 measures
+	{C, C_whole}, {BF, BF_whole}, {C0, C0_whole},
+	{G, G_whole},//fifth 4 measures
+	{E, E_whole}, {D, D_3}, {F, F_3}, {G, G_whole*2}
 };
 const note song1[100];
 
 uint32_t wave0, wave1, count0, count1, note0, note1, instrument;
-	
+char on_button, song_going;	
 int main(void){
   uint32_t i=0;
-  DAC_Init(0x1000);                  // initialize with command: Vout = Vref
   SysTick_Init();
-  while(1){
-    DAC_Out(wave[i&0x1F]);
-    i = i + 1;
-    // calculated frequencies are not exact, due to the impreciseness of delay loops
-    // assumes using 16 MHz PIOSC (default setting for clock source)
-    // maximum frequency with 16 MHz PIOSC: (8,000,000 bits/1 sec)*(1 sample/16 bits)*(1 wave/32 sample) = 15,625 Hz
-    // maximum frequency with 20 MHz PLL: (10,000,000 bits/1 sec)*(1 sample/16 bits)*(1 wave/32 sample) = 19,531.25 Hz
-//    SysTick_Wait(0);                 // ?? kHz sine wave (actually 12,000 Hz)
-//    SysTick_Wait(9);                 // 55.6 kHz sine wave (actually 10,000 Hz)
-//    SysTick_Wait(15);                // 33.3 kHz sine wave (actually 8,500 Hz)
-//    SysTick_Wait(19);                // 26.3 kHz sine wave (actually 8,500 Hz)
-//    SysTick_Wait(64);                // 7.81 kHz sine wave (actually 4,800 Hz)
-//    SysTick_Wait(99);                // 5.05 kHz sine wave (actually 3,500 Hz)
-    SysTick_Wait(1136);              // 440 Hz sine wave (actually 420 Hz)
-//    SysTick_Wait(50000);             // 10 Hz sine wave (actually 9.9 Hz)
-  }
+	while(1){
+		if(on_button == 1){
+			song_going = 1;
+			wave0 = 0;
+			wave1 = 0;
+			note0 = 0;
+			note1 = 0;
+			count0 = 0;
+			count1 = 0;
+			instrument = 0;
+			DisableInterrupts();
+			Timer0A_Init();
+			Timer1A_Init();
+			DAC_Init();
+			EnableInterrupts();
+			while(song_going == 1){
+				
+			}
+		}
+	}
 }

@@ -9,3 +9,6 @@ void Timer1A_Init();
 
 // ISR for Timer0
 void Timer1A_Handler();
+
+// Disables timer for playing music
+void disable_music();
